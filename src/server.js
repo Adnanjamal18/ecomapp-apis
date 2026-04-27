@@ -3,23 +3,22 @@ import { config } from "dotenv";
 import { connectDB, disconnectDB } from "./config/db.js";
 
 // Import Routes
-import movieRoutes from "./routes/movieroutes.js";
 import authRoutes from "./routes/authroutes.js";
-// import watchlistRoutes from "./routes/watchlistRoutes.js";
+import userRoutes from "./routes/userroutes.js";
 
 config();// Yeh .env process karti hai
 connectDB();// Yeh database connect karti hai
 
 const app = express(); // Yeh express app banati hai
 
-// Body parsing middlwares
+// Body parsing middlwares //? what are middlewares they are funs which will be sitting in between request and response allowing you to run the code in between(modifying reqs checking permissions you might want to check or even stopping the req before
+//?  it reaches the route handler we create) 
 app.use(express.json()); // when ever some json format is sent through body it will parse it and make it available in req.body
 app.use(express.urlencoded({ extended: true })); // when ever some url encoded format is sent through body it will parse it and make it available in req.body
 
 // API Routes
-app.use("/movies", movieRoutes); // Yeh movies routes ko handle karti hai
 app.use("/auth", authRoutes); // Yeh auth routes ko handle karti hai
-// app.use("/watchlist", watchlistRoutes); // Yeh watchlist routes ko handle karti hai
+app.use("/users", userRoutes); // Yeh user routes ko handle karti hai
 
 const PORT = 5001; // Yeh port number hai
 

@@ -1,7 +1,7 @@
 import { prisma } from "../src/config/db.js";
 //we create another instance of prisma and not use the config one coz this file wont be a part of out api
 //? its going to be a script that we can run whenever we wanna seed our database so add more data to our database
-const userId = "0ba27a35-b853-4b3d-a54e-7be1a69000db";
+const userId = "bdf469ac-8fce-411c-bacf-b3ab6a6c5064";
 
 const movies = [
   {

@@ -96,16 +96,5 @@ const logout = async (req, res) => {
         message: "loged out successfully",
     });
 };
-const deleteuser = async (req, res) => {
-    const userId = req.user.id;
 
-    await prisma.user.delete({
-        where: { id: userId }
-    });
-
-    res.status(200).json({
-        status: "success",
-        message: "user deleted successfully"
-    });
-};
-export { register, login, logout, deleteuser };
+export { register, login, logout };
