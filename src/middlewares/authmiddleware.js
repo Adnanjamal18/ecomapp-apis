@@ -15,15 +15,25 @@ export const authmiddleware = async (req, res, next) => {
     else if (req.cookies?.jwt) {
         token = req.cookies.jwt;
     }
-
+    //? Step 1: Token dhundho
+    //? ├── Headers mein check karo: "Bearer <token>"
+    // ?├── Ya cookies mein check karo
+    // ?└── Agar token nahi mila → 401 "Not authorized, no token"
     if (!token) {
         return res.status(401).json({ error: "Not authorized, no token provided" });
     }
-
+    //? Step 2: Token verify karo
+    //? ├── jwt.verify() se decode karo
+    //? ├── Decoded token se user ID nikalo
+    //? └── Agar token invalid/expired → 401 "Token failed
     try {
         // Verify token and extract the user Id
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+        // ?Step 3: User database mein hai?
+        //? ├── prisma.user.findUnique() se check karo
+        //?├── Agar user delete ho chuka → 401 "User no longer exists"
+        //?└── Agar sab sahi hai ↓
         const user = await prisma.user.findUnique({
             where: { id: decoded.id },
         });
@@ -31,7 +41,8 @@ export const authmiddleware = async (req, res, next) => {
         if (!user) {
             return res.status(401).json({ error: "User no longer exists" });
         }
-
+        //? Step 4: req.user = user (user info attach karo request pe)
+        //? Step 5: next() → Agla controller function chala do
         req.user = user;
         next();
     } catch (err) {

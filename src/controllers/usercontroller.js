@@ -20,7 +20,15 @@ export const getAllUsers = async (req, res) => {
 // Get single user
 export const getUser = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id } = req.params; //?. req.params = URL ke andar chipka hua data , req.body = body andar bheja hua data (hidden payload)
+        //! ⚠️ Ek important condition (ye log bhool jaate hain)
+
+        //! Agar ye line nahi likhi:
+
+        //! app.use(express.json());
+
+        //! ❌ to req.body undefined ho jayega
+        //! 👉 kyunki Express ko samajh hi nahi aayega JSON ko parse kaise kare
         const user = await prisma.user.findUnique({
             where: { id },
             select: { id: true, name: true, email: true, createdAt: true }
@@ -46,6 +54,7 @@ export const updateUser = async (req, res) => {
             where: { id },
             data: dataToUpdate,
             select: { id: true, name: true, email: true, createdAt: true }
+            //! Notice: select use kiya hai taaki password kabhi response mein na jaye — only safe fields return hoti hain.
         });
 
         res.status(200).json({ status: "success", data: { user } });

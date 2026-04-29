@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.use(authmiddleware);
 
-router.route("/")
+router.route("/getallusers")
     .get(getAllUsers);
 
 router.route("/:id")

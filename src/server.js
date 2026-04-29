@@ -5,6 +5,9 @@ import { connectDB, disconnectDB } from "./config/db.js";
 // Import Routes
 import authRoutes from "./routes/authroutes.js";
 import userRoutes from "./routes/userroutes.js";
+import productRoutes from "./routes/productsroutes.js";
+import walletRoutes from "./routes/walletroutes.js";
+import orderRoutes from "./routes/orderroutes.js";
 
 config();// Yeh .env process karti hai
 connectDB();// Yeh database connect karti hai
@@ -19,6 +22,9 @@ app.use(express.urlencoded({ extended: true })); // when ever some url encoded f
 // API Routes
 app.use("/auth", authRoutes); // Yeh auth routes ko handle karti hai
 app.use("/users", userRoutes); // Yeh user routes ko handle karti hai
+app.use("/products", productRoutes); // Product CRUD routes
+app.use("/wallet", walletRoutes);     // Wallet balance routes
+app.use("/orders", orderRoutes);      // Order placement routes
 
 const PORT = 5001; // Yeh port number hai
 

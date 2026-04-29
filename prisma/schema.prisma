@@ -12,10 +12,52 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  role      Role      @default(USER)
+  createdAt DateTime  @default(now())
+  products  Product[] // Yeh admin ke banaye hue products hain (relation)
+  wallet    Wallet? // Har user ka EK wallet hoga (? matlab optional, shuru me nahi hoga)
+  orders    Order[] // Ek user ke bohat se orders ho sakte hain
+}
 
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  price       Float
+  stock       Int      @default(0)
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  createdBy   String
+  creator     User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  orders      Order[] // Ek product ke bohat se orders ho sakte hain
+}
+
+// Wallet table — har user ka apna wallet hoga jisme balance stored hoga
+model Wallet {
+  id        String   @id @default(uuid())
+  balance   Float    @default(0) // Kitne paise hain user ke paas
+  userId    String   @unique // @unique matlab EK user ka sirf EK wallet ho sakta hai
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+}
+
+// Order table — jab user product khareede ga toh order create hoga
+model Order {
+  id         String   @id @default(uuid())
+  quantity   Int      @default(1) // Kitne items khareede
+  totalPrice Float // Product price × quantity = total
+  userId     String // Kis user ne order kiya
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId  String // Kaun sa product khareeda
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  USER
 }
