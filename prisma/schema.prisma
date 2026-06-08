@@ -23,7 +23,7 @@ model User {
   orders    Order[] // Ek user ke bohat se orders ho sakte hain
 }
 
-model Product {
+model Product { 
   id          String   @id @default(uuid())
   name        String
   description String?

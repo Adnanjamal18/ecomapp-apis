@@ -19,7 +19,7 @@ const router = express.Router();
 router.use(authmiddleware);
 
 // POST /wallet → Wallet create ya balance add
-router.post("/", createOrAddBalance);
+router.post("/addbalance", createOrAddBalance);
 
 // GET /wallet → Balance check karo
 router.get("/", getBalance);

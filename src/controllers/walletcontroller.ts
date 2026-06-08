@@ -1,3 +1,4 @@
+import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/db.js";
 
 // ============================================================
@@ -24,9 +25,9 @@ import { prisma } from "../config/db.js";
 // Agar record mila → UPDATE karo
 // Agar record nahi mila → INSERT (CREATE) karo
 // Dono kaam ek hi function se ho jata hai!
-export const createOrAddBalance = async (req, res) => {
+export const createOrAddBalance = async (req: Request, res: Response) => {
     try {
-        const { balance } = req.body;
+        const { balance } = req.body as any;
 
         //! Validation — balance positive hona chahiye
         if (!balance || balance <= 0) {
@@ -91,7 +92,7 @@ export const createOrAddBalance = async (req, res) => {
 // ─────────────────────────────────────────────
 // Koi body ya params nahi chahiye — sirf token se user ID nikalte hain
 // Jaise ATM mein balance check karte ho!
-export const getBalance = async (req, res) => {
+export const getBalance = async (req: Request, res: Response) => {
     try {
         //* req.user.id → authmiddleware ne token decode karke yeh attach kiya tha
         const wallet = await prisma.wallet.findUnique({

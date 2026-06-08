@@ -1,10 +1,11 @@
+import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/db.js";
 import bcrypt, { compare } from "bcryptjs";
 import { generateToken } from "../utils/generateToken.js";
 //when you use post req you are usually tyring to create data in your database 
 
-const register = async (req, res) => { // the way you send data to db from your client is through req.body
-    const { name, email, password } = req.body;  // Yeh request body se data le rahi hai
+const register = async (req: Request, res: Response) => { // the way you send data to db from your client is through req.body
+    const { name, email, password } = req.body as any;  // Yeh request body se data le rahi hai
 
     //check if user already exists
     const userexists = await prisma.user.findUnique({ // Yeh user ko find karti hai
@@ -48,8 +49,8 @@ const register = async (req, res) => { // the way you send data to db from your 
 };
 
 //jwt token generate
-const login = async (req, res) => {
-    const { email, password } = req.body;
+const login = async (req: Request, res: Response) => {
+    const { email, password } = req.body as any;
     //* check is user exists in user table
 
     const user = await prisma.user.findUnique({
@@ -86,7 +87,7 @@ const login = async (req, res) => {
     })
 };
 
-const logout = async (req, res) => {
+const logout = async (req: Request, res: Response) => {
     res.cookie("jwt", "", {
         httpOnly: true,
         expires: new Date(0),

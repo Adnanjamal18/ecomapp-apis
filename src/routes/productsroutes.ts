@@ -38,7 +38,7 @@ router.use(authmiddleware);
 //
 // Yahan adminMiddleware NAHI lagaya kyunki USER ko bhi products dekhne hain!
 
-router.get("/", getAllProducts);
+router.get("/getproducts", getAllProducts);
 router.get("/:id", getProduct);
 
 // ─────────────────────────────────────────────
@@ -52,7 +52,7 @@ router.get("/:id", getProduct);
 //? Flow: Request → authmiddleware (token check) → adminMiddleware (role check) → Controller
 //? Agar user ADMIN nahi hai → 403 "Access denied" milega, controller tak pahunchega hi nahi!
 
-router.post("/", adminMiddleware, createProduct);
+router.post("/create", adminMiddleware, createProduct);
 router.put("/:id", adminMiddleware, updateProduct);
 router.delete("/:id", adminMiddleware, deleteProduct);
 

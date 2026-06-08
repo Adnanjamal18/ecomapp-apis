@@ -18,9 +18,9 @@ const router = express.Router();
 router.use(authmiddleware);
 
 // POST /orders → Product khareedn
-router.post("/", createOrder);
+router.post("/createorder", createOrder);
 
 // GET /orders → Apne orders dekho
-router.get("/", getMyOrders);
+router.get("/getorder", getMyOrders);
 
 export default router;

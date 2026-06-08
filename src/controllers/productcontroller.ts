@@ -1,3 +1,4 @@
+import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/db.js";
 
 // ============================================================
@@ -17,11 +18,11 @@ import { prisma } from "../config/db.js";
 // Sirf ADMIN hi yeh kar sakta hai (adminMiddleware routes mein check karega)
 // req.body se product ki details aayengi (name, price, etc.)
 // req.user.id se pata chalega ki kis admin ne banaya — yeh authmiddleware attach karta hai
-export const createProduct = async (req, res) => {
+export const createProduct = async (req: Request, res: Response) => {
     try {
         //? req.body se saari product details nikaal rahe hain
         //? Jaise Postman mein body mein { "name": "iPhone", "price": 999 } bhejoge
-        const { name, description, price, stock, imageUrl } = req.body;
+        const { name, description, price, stock, imageUrl } = req.body as any;
 
         //! Validation — check karo ki zaruri fields hain ya nahi
         //! Agar name ya price nahi bheja toh error do
@@ -42,7 +43,7 @@ export const createProduct = async (req, res) => {
                 price,          // Product ki price
                 stock: stock || 0,  // Kitne items available hain, default 0
                 imageUrl,       // Product ki image URL (optional)
-                createdBy: req.user.id  //! IMPORTANT: Yeh admin ka ID hai jo token se aaya
+                createdBy: (req as any).user.id  //! IMPORTANT: Yeh admin ka ID hai jo token se aaya
             }
         });
 
@@ -53,7 +54,7 @@ export const createProduct = async (req, res) => {
             data: { product }
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Create Product Error:", error);
         res.status(500).json({ error: "Server Error — product nahi ban paya" });
     }
@@ -64,7 +65,7 @@ export const createProduct = async (req, res) => {
 // ─────────────────────────────────────────────
 // Koi bhi logged-in user (USER ya ADMIN) yeh dekh sakta hai
 // prisma.product.findMany() se SAARE products aate hain
-export const getAllProducts = async (req, res) => {
+export const getAllProducts = async (req: Request, res: Response) => {
     try {
         //* findMany() = SELECT * FROM products
         //* Yeh saare products laata hai database se
@@ -87,7 +88,7 @@ export const getAllProducts = async (req, res) => {
             data: { products }
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Get All Products Error:", error);
         res.status(500).json({ error: "Server Error — products nahi aa paye" });
     }
@@ -98,11 +99,11 @@ export const getAllProducts = async (req, res) => {
 // ─────────────────────────────────────────────
 // URL mein ID aayegi jaise: GET /products/abc-123
 // req.params.id se woh ID milegi
-export const getProduct = async (req, res) => {
+export const getProduct = async (req: Request, res: Response) => {
     try {
         //? req.params.id = URL mein jo :id hai woh
         //? Jaise GET /products/abc-123 → req.params.id = "abc-123"
-        const { id } = req.params;
+        const id = req.params.id as string;
 
         //* findUnique() = SELECT * FROM products WHERE id = '...'
         //* Yeh SIRF ek product laata hai jo match kare
@@ -125,7 +126,7 @@ export const getProduct = async (req, res) => {
             data: { product }
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Get Product Error:", error);
         res.status(500).json({ error: "Server Error" });
     }
@@ -136,14 +137,14 @@ export const getProduct = async (req, res) => {
 // ─────────────────────────────────────────────
 // Admin URL mein ID bhejega aur body mein updated data
 // Jaise: PUT /products/abc-123 with body { "price": 1299 }
-export const updateProduct = async (req, res) => {
+export const updateProduct = async (req: Request, res: Response) => {
     try {
-        const { id } = req.params;
-        const { name, description, price, stock, imageUrl } = req.body;
+        const id = req.params.id as string;
+        const { name, description, price, stock, imageUrl } = req.body as any;
 
         //* Ek object banao jisme sirf wohi fields hain jo user ne bhejin
         //* Matlab agar sirf price bheja toh sirf price update hoga, baaki same rahega
-        let dataToUpdate = {};
+        let dataToUpdate: any = {};
         if (name) dataToUpdate.name = name;
         if (description !== undefined) dataToUpdate.description = description;
         if (price !== undefined) dataToUpdate.price = price;
@@ -162,7 +163,7 @@ export const updateProduct = async (req, res) => {
             data: { product }
         });
 
-    } catch (error) {
+    } catch (error: any) {
         //! P2025 = Prisma error code jab record nahi milta
         //! Matlab koi aisi ID bhej raha jo exist nahi karti
         if (error.code === 'P2025') {
@@ -177,9 +178,9 @@ export const updateProduct = async (req, res) => {
 // 5️⃣ DELETE PRODUCT — Product delete karo (sirf ADMIN)
 // ─────────────────────────────────────────────
 // Admin URL mein ID bhejega: DELETE /products/abc-123
-export const deleteProduct = async (req, res) => {
+export const deleteProduct = async (req: Request, res: Response) => {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
 
         //* prisma.product.delete() = DELETE FROM products WHERE id = '...'
         await prisma.product.delete({
@@ -191,7 +192,7 @@ export const deleteProduct = async (req, res) => {
             message: "Product deleted successfully! 🗑️"
         });
 
-    } catch (error) {
+    } catch (error: any) {
         if (error.code === 'P2025') {
             return res.status(404).json({ error: "Product nahi mila for delete!" });
         }

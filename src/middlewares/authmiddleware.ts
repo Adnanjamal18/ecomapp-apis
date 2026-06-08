@@ -1,3 +1,4 @@
+import { Request, Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken';
 import { prisma } from "../config/db.js";
 
@@ -6,7 +7,7 @@ import { prisma } from "../config/db.js";
 //? WE ARE NOW GONNA REQUIRE THAT THE PERSON MAKING REQUEST SENDS IN THE JWT THROUGH THE HEADERS 
 /// WHY NOT THROUGH THE BODY 
 //* WELL COZ THE HEADERS ARE DESIGNED FOR AUTHENTICATION WHILE THE BODY IS ACTULLY DESIGNED FOR CONTENT OF THE REQUEST
-export const authmiddleware = async (req, res, next) => {
+export const authmiddleware = async (req: Request, res: Response, next: NextFunction) => {
     console.log("auth middleware reached");
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
@@ -28,14 +29,14 @@ export const authmiddleware = async (req, res, next) => {
     //? └── Agar token invalid/expired → 401 "Token failed
     try {
         // Verify token and extract the user Id
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
 
         // ?Step 3: User database mein hai?
         //? ├── prisma.user.findUnique() se check karo
         //?├── Agar user delete ho chuka → 401 "User no longer exists"
         //?└── Agar sab sahi hai ↓
         const user = await prisma.user.findUnique({
-            where: { id: decoded.id },
+            where: { id: (decoded as any).id },
         });
 
         if (!user) {

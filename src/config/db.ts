@@ -19,7 +19,7 @@ const connectDB = async () => {
   try {
     await prisma.$connect();
     console.log("DB Connected via Prisma");
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Database connection error: ${error.message}`);
     process.exit(1);
   }
