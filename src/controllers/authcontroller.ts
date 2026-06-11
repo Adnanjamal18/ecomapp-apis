@@ -26,13 +26,16 @@ const register = async (req: Request, res: Response) => { // the way you send da
 
     // Creeate User
     const user = await prisma.user.create({
-        data: { // Yeh user ko create karti hai
-            name,
-            email,
-            password: hashedPassword,
-
-        }
-
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        wallet: {
+          create: {
+            balance: 6000,
+          },
+        },
+      },
     });
     const token = generateToken(user.id, res);
     res.status(201).json({

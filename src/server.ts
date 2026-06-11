@@ -18,8 +18,7 @@ const app = express(); // Yeh express app banati hai
 
 app.use(
   cors({
-    origin:[ "http://localhost:5173",
-     "https://reactjs-ecom-fullstack-app.vercel.app"],
+    origin:true,
     credentials: true,
   }),
 );
